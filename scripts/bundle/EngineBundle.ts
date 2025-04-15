@@ -13,37 +13,7 @@ import ts from "typescript";
 import RebuildPlugin from "../plugins/plugin-rebuild-engine.js";
 import { injectWASM } from "../plugins/plugin-inject-wasm.js";
 
-const Platform_GlobalVars_Map = {
-  'alipay': 'globalThis',
-  'wechat': 'GameGlobal',
-};
-
-const Platform_WASM_API = {
-  'alipay': 'MYWebAssembly',
-  'wechat': 'WXWebAssembly',
-}
-
-const GE_REF_API_LIST = [
-  'URL',
-  'Blob',
-  'window',
-  'document',
-  'TextDecoder',
-  'XMLHttpRequest',
-  'OffscreenCanvas',
-  'HTMLCanvasElement',
-  'HTMLImageElement',
-  'Image',
-
-  'atob',
-  'navigator',
-  'performance',
-  'cancelAnimationFrame',
-  'requestAnimationFrame',
-  '$defaultWebGLExtensions',
-  'fonts',
-  'URLSearchParams'
-];
+import { globalDefinition, wasmDefinition, refWebAPI } from './API.js';
 
 const matchGalaceanName = /@galacean\/([^\/]+)/;
 
@@ -95,9 +65,9 @@ export function getEngineBundle(dependence: string, platformType: PlatformType, 
         resolve(),
         RebuildPlugin.getPlugins(uniqueBundleInfo),
         pluginReplaceGalaceanLogic(),
-        injectWASM(Platform_WASM_API[platform]),
+        injectWASM(wasmDefinition[platform]),
         pluginReplaceSIMDSupported(),
-        pluginReplaceWebAPI(Platform_GlobalVars_Map[platform], '.platformAdapter', ``, GE_REF_API_LIST),
+        pluginReplaceWebAPI(globalDefinition[platform], '.platformAdapter', ``, refWebAPI),
       ],
     });
   }
@@ -142,8 +112,8 @@ export function getJSWASMLoaderBundle(loader: string, platformType: PlatformType
       needUglify: true,
       rollupPlugins: [
         resolve(),
-        injectWASM(Platform_WASM_API[platform], [bundleName]),
-        pluginReplaceWebAPI(Platform_GlobalVars_Map[platform], '.platformAdapter', ``, GE_REF_API_LIST)
+        injectWASM(wasmDefinition[platform], [bundleName]),
+        pluginReplaceWebAPI(globalDefinition[platform], '.platformAdapter', ``, refWebAPI)
       ],
     });
   }

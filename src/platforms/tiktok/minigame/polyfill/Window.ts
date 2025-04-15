@@ -24,29 +24,29 @@ Object.assign(platformAdapter.window, {
   HTMLElement: HTMLElement,
   localStorage: {
     get length() {
-      const { keys } = wx.getStorageInfoSync();
+      const { keys } = tt.getStorageInfoSync();
       return keys.length;
     },
   
     key(n) {
-      const { keys } = wx.getStorageInfoSync();
+      const { keys } = tt.getStorageInfoSync();
       return keys[n];
     },
   
     getItem(key) {
-      return wx.getStorageSync(key);
+      return tt.getStorageSync(key);
     },
   
     setItem(key, value) {
-      return wx.setStorageSync(key, value);
+      return tt.setStorageSync(key, value);
     },
   
     removeItem(key) {
-      wx.removeStorageSync(key);
+      tt.removeStorageSync(key);
     },
   
     clear() {
-      wx.clearStorageSync();
+      tt.clearStorageSync();
     }
   },
   location: {
