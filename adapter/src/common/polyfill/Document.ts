@@ -3,7 +3,6 @@ import Event from "./Event";
 import TouchEvent from "./events/TouchEvent";
 
 export default interface Document {
-  [key: string]: any,
   readyState: string,
   visibilityState: string,
   onvisibilitychange: ((this, visible) => any) | null,
