@@ -58,6 +58,16 @@ function createResolveMatcher(id: string) {
   return new RegExp(`(^|[/\\\\])${path.basename(id, path.extname(id))}(?=([/\\\\.]|$))`);
 }
 
+/**
+ * 转义字符串中的 Glob 特殊字符
+ * @param {string} string 要转义的字符串
+ * @returns {string} 转义后的字符串
+ */
+function escapeGlob(string) {
+  // 使用正则表达式匹配所有特殊字符并在前面加上反斜杠转义
+  return string.replace(/[\\?*[\]{}()^!]/g, '\\$&');
+}
+
 export {
   getRelativePath,
   getSubDirRelativePath,
@@ -66,5 +76,6 @@ export {
   getOutputDir,
   normalizePath,
   loadPackageJson,
-  createResolveMatcher
+  createResolveMatcher,
+  escapeGlob,
 };
