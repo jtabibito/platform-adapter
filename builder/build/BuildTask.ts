@@ -11,7 +11,7 @@ import { exec } from 'child_process';
 import { promisify } from 'util';
 
 import BuildSettings from './BuildSettings.js';
-import { createResolveMatcher, getRelativePath, getSubDirRelativePath, loadPackageJson, normalizePath } from '../utils/Utils.js';
+import { createResolveMatcher, escapeGlob, getRelativePath, getSubDirRelativePath, loadPackageJson, normalizePath } from '../utils/Utils.js';
 import Package from './Package.js';
 import rebuildDependency from '../plugins/plugin-rebuild-dependency.js';
 
@@ -76,7 +76,7 @@ class BuildTask {
       copyAssets.push(...buildSettings.assets.map(asset => {
         const dest = path.join(buildSettings.output!, getRelativePath(buildSettings.project!, path.dirname(asset)));
         console.log(chalk.blue(`Copy assets '${asset}' to '${dest}'`));
-        return { src: asset, dest: buildSettings.output! };
+        return { src: escapeGlob(asset), dest: buildSettings.output! };
       }));
     }
 
@@ -93,7 +93,7 @@ class BuildTask {
         const src = path.join(_dependency, packageInfo.browser ?? packageInfo.main);
         const dependency = packageInfo.name;
         const dest = path.join(buildSettings.output!, dependencyPath, dependency);
-        copyAssets.push({ src, dest });
+        copyAssets.push({ src: escapeGlob(src), dest });
         console.log(chalk.blue(`Copy dependencies '${src}' to '${dest}'`));
         const basename = path.basename(dependencyScript);
         mappingDependencies.push({ find: packageInfo.name, replacement: path.join(dependency, basename) });
@@ -110,12 +110,12 @@ class BuildTask {
         let src = _wasm.wasmBinary;
         let dest = wasmSubpackageDir;
         console.log(chalk.blue(`Copy webassembly '${src}' to '${dest}'`));
-        copyAssets.push({ src, dest });
+        copyAssets.push({ src: escapeGlob(src), dest });
 
         src = _wasm.loader;
         dest = buildSettings.output!;
         console.log(chalk.blue(`Copy webassembly loader '${src}' to '${dest}'`));
-        copyAssets.push({ src, dest });
+        copyAssets.push({ src: escapeGlob(src), dest });
         const filename = path.basename(src);
         wasmloaders.push(filename);
 
