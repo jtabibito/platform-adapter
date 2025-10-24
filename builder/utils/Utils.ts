@@ -65,7 +65,7 @@ function createResolveMatcher(id: string) {
  */
 function escapeGlob(string: string) {
   // 使用正则表达式匹配所有特殊字符并在前面加上反斜杠转义
-  return string.replace(/[\\?*[\]{}()^!]/g, '\\$&');
+  return string.replace(/[\\?*\[\]{}()^!]/g, '\\$&');
 }
 
 export {
