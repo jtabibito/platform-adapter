@@ -58,6 +58,15 @@ function createResolveMatcher(id: string) {
   return new RegExp(`(^|[/\\\\])${path.basename(id, path.extname(id))}(?=([/\\\\.]|$))`);
 }
 
+/**
+ * Escapes Glob special characters in a string.
+ * @param {string} string - The string to be escaped.
+ * @returns {string} The escaped string.
+ */
+function escapeGlob(string: string) {
+  return string.replace(/[\\?*\[\]{}()^!]/g, '\\$&');
+}
+
 export {
   getRelativePath,
   getSubDirRelativePath,
@@ -66,5 +75,6 @@ export {
   getOutputDir,
   normalizePath,
   loadPackageJson,
-  createResolveMatcher
+  createResolveMatcher,
+  escapeGlob,
 };
